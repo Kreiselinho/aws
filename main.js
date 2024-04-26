@@ -39,7 +39,7 @@ async function showStations(url) {
     let response = await fetch(url);
     let geojson = await response.json();
 
-    // Wetterstationen mit Icons und Popups
+    // Wetterstationen mit Icons und Popups final
     console.log(geojson)
     L.geoJSON(geojson, {
         pointToLayer: function (feature, latlng) {
