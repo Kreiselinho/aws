@@ -54,7 +54,7 @@ async function showStations(url) {
         onEachFeature: function (feature, layer) {
             layer.bindPopup(`
             <h4> ${feature.properties.name} (${feature.geometry.coordinates [2]}m) </h4>      
-            <ul>
+            <ul> bbhdb
                 <li> Lufttemperatur (°C): ${feature.properties.LT || "-"} </li>
                 <li> Relative Luftfeuchte (%): ${feature.properties.RH || "-"} </li>
                 <li> Windgeschwindigkeit (km/h): ${feature.properties.WG || "-"} </li>
