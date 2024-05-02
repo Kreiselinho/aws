@@ -13,7 +13,8 @@ let map = L.map("map", {
 
 // thematische Layer
 let themaLayer = {
-    stations: L.featureGroup().addTo(map)
+    stations: L.featureGroup().addTo(map),
+    temperature: L.featureGroup().addTo(map),
 }
 
 // Hintergrundlayer
@@ -26,13 +27,27 @@ L.control.layers({
     "Esri WorldTopoMap": L.tileLayer.provider("Esri.WorldTopoMap"),
     "Esri WorldImagery": L.tileLayer.provider("Esri.WorldImagery")
 }, {
-    "Wetterstationen": themaLayer.stations
+    "Wetterstationen": themaLayer.stations,
+    "Temperatur": themaLayer.temperature,
 }).addTo(map);
 
 // Maßstab
 L.control.scale({
     imperial: false,
 }).addTo(map);
+
+function showTemperature(geojson) {
+    L.geoJSON(geojson, {
+        pointToLayer: function(feature, latlng) {
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span>${feature.properties.LT}</span>`
+                })
+            })
+        }
+    }).addTo(themaLayer.temperature);
+}
 
 // GeoJSON der Wetterstationen laden
 async function showStations(url) {
@@ -52,17 +67,19 @@ async function showStations(url) {
             });
         },
         onEachFeature: function (feature, layer) {
+            let pointInTime = new Date (feature.properties.date);
             layer.bindPopup(`
-            <h4> ${feature.properties.name} (${feature.geometry.coordinates [2]}m) </h4>      
+            <h4> ${feature.properties.name} (${feature.geometry.coordinates[2]}m) </h4>      
             <ul> 
                 <li> Lufttemperatur (°C): ${feature.properties.LT || "-"} </li>
                 <li> Relative Luftfeuchte (%): ${feature.properties.RH || "-"} </li>
                 <li> Windgeschwindigkeit (km/h): ${feature.properties.WG || "-"} </li>
                 <li> Schneehöhe (cm): ${feature.properties.HS || "-"} </li>
             </ul>
-            ${feature.properties.date}
+            <span>${pointInTime.toLocaleString()}</span>
             `);
         }
     }).addTo(themaLayer.stations);
+    showTemperature(geojson);
 }
 showStations("https://static.avalanche.report/weather_stations/stations.geojson");
