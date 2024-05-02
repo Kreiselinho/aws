@@ -36,15 +36,23 @@ L.control.scale({
     imperial: false,
 }).addTo(map);
 
+function getColor(value, ramp) {
+    for (let rule of ramp) {
+        if (value >= rule.min && value < rule.max) {
+            return rule.color;
+        }
+    }
+}
+
 function showTemperature(geojson) {
     L.geoJSON(geojson, {
         filter: function (feature) {
             //feature.properties.LT
-            if(feature.properties.LT > -50 && feature.properties.LT <50) {
+            if (feature.properties.LT > -50 && feature.properties.LT < 50) {
                 return true;
             }
         },
-        pointToLayer: function(feature, latlng) {
+        pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
@@ -73,7 +81,7 @@ async function showStations(url) {
             });
         },
         onEachFeature: function (feature, layer) {
-            let pointInTime = new Date (feature.properties.date);
+            let pointInTime = new Date(feature.properties.date);
             layer.bindPopup(`
             <h4> ${feature.properties.name} (${feature.geometry.coordinates[2]}m) </h4>      
             <ul> 
