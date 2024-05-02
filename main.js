@@ -105,6 +105,16 @@ function showSnow(geojson) {
         }
     }).addTo(themaLayer.snow);
 }
+L.control.rainviewer({
+    position: 'topright',
+    nextButtonText: '10 min weiter',
+    playStopButtonText: 'Start/Stopp',
+    prevButtonText: '10 min zurück',
+    positionSliderLabelText: "Uhrzeit:",
+    opacitySliderLabelText: "Deckkraft:",
+    animationInterval: 500,
+    opacity: 0.9
+}).addTo(map);
 
 // GeoJSON der Wetterstationen laden
 async function showStations(url) {
